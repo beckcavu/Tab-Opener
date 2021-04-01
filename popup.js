@@ -25,9 +25,8 @@ var inRemoveMode = false;
 
 //macroCreator - called on click #CreateMacro
 function macroCreator() {
-    if (this.innerHTML == '<i class="plus square outline icon"></i> Create Macro') {
-        this.innerHTML = '<i class="times icon"></i> Cancel';
-        this.className = "fluid medium negative ui button";
+        clearDiv('buttongroup')
+        this.style.visibility = "hidden";
         var RemoveMacro = document.getElementById('RemoveMacro');
         RemoveMacro.style.visibility = "hidden";
         var linklist = document.getElementById('linklist');
@@ -37,7 +36,7 @@ function macroCreator() {
         linklist.appendChild(form);
 
         var header = document.createElement("LABEL"); //label header for  text input fields
-        header.innerHTML = "Title of this Macro:";
+        header.innerHTML = "Name";
         header.for = "nameMacro";
         header.id = "name";
         header.className = "ui header";
@@ -48,10 +47,9 @@ function macroCreator() {
         nameIn.className = "ui input";
         nameIn.type = "text";
         form.appendChild(nameIn);
-        form.appendChild(document.createElement("br"));
 
         var title = document.createElement("LABEL"); //label for  text input fields
-        title.innerHTML = "Links for the Macro:";
+        title.innerHTML = "Links";
         title.for = "linksMacro";
         title.id = "linksMacro";
         title.className = "ui header";
@@ -65,32 +63,33 @@ function macroCreator() {
         var creator = document.getElementById('creatorbuttons');
         var plusBtn = document.createElement("BUTTON"); // btn to add a link field
         plusBtn.id = "plusBtn";
-        plusBtn.className = "ui small left floated icon button";
+        plusBtn.className = "ui small left floated circular yellow button";
         plusBtn.innerHTML = '<i class="plus square outline icon"></i> Add Link';
+        plusBtn.style.marginBottom = "2%";
         plusBtn.addEventListener('click', addLinkField, false);
         creator.appendChild(plusBtn);
 
         var btn = document.createElement("BUTTON"); // submit button
         btn.innerHTML = "Submit";
         btn.id = "submit";
-        btn.className = "fluid medium ui button";
+        btn.className = "fluid medium positive ui button";
         btn.addEventListener('click', submitted,false);
         creator.appendChild(btn);
-    }
-    else {
-        var RemoveMacro = document.getElementById('RemoveMacro');
-        RemoveMacro.style.visibility = "visible";
-        this.className = "fluid medium positive ui button";
-        this.innerHTML = '<i class="plus square outline icon"></i> Create Macro';
-        clearDiv('linklist');
-        clearDiv('creatorbuttons');
-    }
-}
 
+        var cancel = document.createElement('BUTTON');
+        cancel.innerHTML = '<i class="times icon"></i> Cancel';
+        cancel.className = "fluid medium negative ui button";
+        cancel.style.marginTop = "2%";
+        cancel.addEventListener('click', CancelCreator, false);
+        creator.appendChild(cancel);
+        
+    }
 //submitted - called on click #submit
 function submitted() {
     var RemoveMacro = document.getElementById('RemoveMacro');
     RemoveMacro.style.visibility = "visible";
+    var CreateMacro = document.getElementById("CreateMacro");
+    CreateMacro.style.visibility = "visible";
     var inputs = document.getElementsByClassName('link'); // get list of inputted links
     var links = [];
     for (var i = 0; i < inputs.length; ++i) {
@@ -99,12 +98,6 @@ function submitted() {
 
     var name = document.getElementById('nameIn'); //name of macro (input)
     var btnGroup = document.getElementById('buttongroup');
-
-    var btn = document.createElement("BUTTON"); //new macro button
-    btn.className = "fluid medium ui button macro";
-    btn.innerHTML = name.value;
-    btn.addEventListener('click', runMacro, false);
-    btnGroup.appendChild(btn);
 
     var CreateMacro = document.getElementById('CreateMacro');
     CreateMacro.innerHTML = '<i class="plus square outline icon"></i> Create Macro';
@@ -116,6 +109,7 @@ function submitted() {
     chrome.storage.sync.get('btn', (result) => { // edit list of btn names
         var btns = result['btn'];
         btns.push(name.value);
+        btnFactory(btns);
         chrome.storage.sync.set({'btn' : btns}); // set new list of btn names
     })
     chrome.storage.sync.set({[name.value] : links}); // set btn name to list of links
@@ -150,7 +144,7 @@ function btnFactory (btnNames) { // creates all macros in btn names list
         var btn = document.createElement("BUTTON");
         btn.innerHTML = btnNames[i];
         btn.id = btnNames[i];
-        btn.className = "fluid medium ui button macro";
+        btn.className = "fluid medium grey ui button macro";
         btn.addEventListener('click', runMacro,false);
         btnGroup.appendChild(btn);
     }
@@ -227,4 +221,16 @@ function removeBtns() {
     CreateMacro.style.visibility = "visible";
     var RemoveMacro = document.getElementById('RemoveMacro');
     RemoveMacro.innerHTML = '<i class="trash alternate outline icon"></i> Remove Macro';
+}
+
+function CancelCreator() {
+    var RemoveMacro = document.getElementById('RemoveMacro');
+    RemoveMacro.style.visibility = "visible";
+    var CreateMacro = document.getElementById("CreateMacro");
+    CreateMacro.style.visibility = "visible";
+    clearDiv('linklist');
+    clearDiv('creatorbuttons');
+    chrome.storage.sync.get('btn', (result) => {
+        btnFactory(result['btn']);
+    })
 }

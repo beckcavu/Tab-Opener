@@ -38,11 +38,19 @@
         bottom: 0;
         left: 0;
       }
+      #settings {
+        position: absolute;
+        margin: 0;
+        width: 100%;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
       .link {
         width: 100%;
         margin-bottom: 10%;
       }
-      .macro {
+      .macro, .input, .header, #creatorbuttons {
         height: 10% !important;
         width: 90% !important;
         margin: 0 auto !important;
@@ -52,11 +60,12 @@
     </style>
   </head>
   <body>
-    <div id="buttongroup"></div>
+    <div id="buttongroup"></div><br>
     <div id="linklist"></div>
     <div id="creatorbuttons"></div>
-<button class="fluid medium positive ui button" id="CreateMacro"><i class="plus square outline icon"></i> Create Macro</button>
+<button class="fluid medium positive ui button" id="CreateMacro" ><i class="plus square outline icon"></i> Create Macro</button>
 <button class="fluid medium negative ui button" id="RemoveMacro"><i class="trash alternate outline icon"></i> Remove Macro</button>
 <button class="fluid medium positive ui button" id="done">Done</button>
+<!--<button class="fluid medium ui button" id="settings">Settings</button>-->
   </body>
 </html>
