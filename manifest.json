@@ -1,6 +1,6 @@
 {
-    "name": "Tab Opener beta",
-    "version": "0.1.0",
+    "name": "Tab Opener",
+    "version": "1.0.0",
     "description": "Extension to open many tabs with one click of a button",
     "permissions": ["declarativeContent", "storage"],
     "page_action": {

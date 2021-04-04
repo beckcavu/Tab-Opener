@@ -4,8 +4,8 @@ var doneBtn = document.getElementById('done');
 doneBtn.style.visibility = "hidden";
 doneBtn.addEventListener('click', removeBtns, false);
 
-var settings = document.getElementById("settings");
-settings.addEventListener('click', openSettings, false);
+//var settings = document.getElementById("settings");
+//settings.addEventListener('click', openSettings, false);
 
 var CreateMacro = document.getElementById('CreateMacro');
 CreateMacro.addEventListener('click', macroCreator, false);
@@ -32,6 +32,8 @@ var inRemoveMode = false;
 //macroCreator - called on click #CreateMacro
 function macroCreator() {
         clearDiv('buttongroup')
+        //var settings = document.getElementById('settings');
+        //settings.style.visibility = "hidden";
         this.style.visibility = "hidden";
         var RemoveMacro = document.getElementById('RemoveMacro');
         RemoveMacro.style.visibility = "hidden";
@@ -100,6 +102,8 @@ function submitted() {
     RemoveMacro.style.visibility = "visible";
     var CreateMacro = document.getElementById("CreateMacro");
     CreateMacro.style.visibility = "visible";
+    //var settings = document.getElementById('settings');
+    //    settings.style.visibility = "visible";
     var inputs = document.getElementsByClassName('link'); // get list of inputted links
     var links = [];
     for (var i = 0; i < inputs.length; ++i) {
@@ -203,6 +207,8 @@ function macroRemover() {
         $('#buttongroup').transition('set looping').transition('pulse', '1s');
         
         CreateMacro.style.visibility = "hidden";
+        //var settings = document.getElementById('settings');
+        //settings.style.visibility = "hidden";
     }
     else {
         $('#buttongroup').transition('remove looping');
@@ -215,12 +221,16 @@ function macroRemover() {
         chrome.storage.sync.set({'toBeRemoved' : []});
         CreateMacro.style.visibility = "visible";
         doneBtn.style.visibility = "hidden";
+        //var settings = document.getElementById('settings');
+        //settings.style.visibility = "visible";
 
     }
 }
 
 function removeBtns() {
     $('#buttongroup').transition('remove looping');
+    //var settings = document.getElementById('settings');
+    //    settings.style.visibility = "visible";
     var toBeRemoved = [];
     chrome.storage.sync.get('btn', (result) => {
         var btnNames = result['btn'];
@@ -259,6 +269,8 @@ function CancelCreator() {
     })
     $("#creatorbuttons").transition('drop');
     $('#linklist').transition('drop');
+   // var settings = document.getElementById('settings');
+     //   settings.style.visibility = "visible";
 }
 
 function openSettings() {
