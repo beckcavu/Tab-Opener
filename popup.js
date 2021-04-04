@@ -4,12 +4,17 @@ var doneBtn = document.getElementById('done');
 doneBtn.style.visibility = "hidden";
 doneBtn.addEventListener('click', removeBtns, false);
 
+var settings = document.getElementById("settings");
+settings.addEventListener('click', openSettings, false);
 
 var CreateMacro = document.getElementById('CreateMacro');
 CreateMacro.addEventListener('click', macroCreator, false);
 
 var RemoveMacro = document.getElementById('RemoveMacro');
 RemoveMacro.addEventListener('click', macroRemover, false);
+
+$("#creatorbuttons").transition('drop');
+$('#linklist').transition('drop');
 //create all stored buttons
 chrome.storage.sync.get('btn', (result) => {
     btnFactory(result['btn']);
@@ -77,12 +82,15 @@ function macroCreator() {
         btn.addEventListener('click', submitted,false);
         creator.appendChild(btn);
 
-        var cancel = document.createElement('BUTTON');
+        var cancel = document.createElement('BUTTON'); // cancel
         cancel.innerHTML = '<i class="times icon"></i> Cancel';
         cancel.className = "fluid medium negative ui button";
         cancel.style.marginTop = "2%";
         cancel.addEventListener('click', CancelCreator, false);
         creator.appendChild(cancel);
+
+        $("#creatorbuttons").transition('drop');
+        $('#linklist').transition('drop');
         
     }
 //submitted - called on click #submit
@@ -115,6 +123,8 @@ function submitted() {
         chrome.storage.sync.set({'btn' : btns}); // set new list of btn names
     })
     chrome.storage.sync.set({[name.value] : links}); // set btn name to list of links
+    $("#creatorbuttons").transition('drop');
+    $('#linklist').transition('drop');
 }
 
 //runMacro - called on click macro btn
@@ -129,6 +139,7 @@ function runMacro () {
         })
     }
     else {
+        $(this).transition('remove looping');
         var doneBtn = document.getElementById('done'); 
         doneBtn.style.visibility = "visible";
         chrome.storage.sync.get('toBeRemoved', (result) => {
@@ -136,7 +147,14 @@ function runMacro () {
             toBeRemoved.push(this.innerHTML);
             chrome.storage.sync.set({'toBeRemoved' : toBeRemoved});
         })
-        this.remove();
+        $(this).transition({
+            animation : 'slide down',
+            duration : "250ms",
+            onComplete : function() {
+                this.remove();
+            }
+        });
+        
     }
 }
 
@@ -182,10 +200,12 @@ function macroRemover() {
             e.className = "fluid medium ui red button macro";
         }
 
+        $('#buttongroup').transition('set looping').transition('pulse', '1s');
         
         CreateMacro.style.visibility = "hidden";
     }
     else {
+        $('#buttongroup').transition('remove looping');
         this.innerHTML = '<i class="trash alternate outline icon"></i> Remove Macro';
         inRemoveMode = false;
         chrome.storage.sync.get('btn', (result) => {
@@ -200,6 +220,7 @@ function macroRemover() {
 }
 
 function removeBtns() {
+    $('#buttongroup').transition('remove looping');
     var toBeRemoved = [];
     chrome.storage.sync.get('btn', (result) => {
         var btnNames = result['btn'];
@@ -236,9 +257,41 @@ function CancelCreator() {
     chrome.storage.sync.get('btn', (result) => {
         btnFactory(result['btn']);
     })
+    $("#creatorbuttons").transition('drop');
+    $('#linklist').transition('drop');
 }
 
+function openSettings() {
+    clearDiv('buttongroup')
+    this.style.visibility = "hidden";
+    var CreateMacro = document.getElementById('CreateMacro');
+    CreateMacro.style.visibility = "hidden";
+    var RemoveMacro = document.getElementById('RemoveMacro');
+    RemoveMacro.style.visibility = "hidden";
+    var btnGroup = document.getElementById("buttongroup");
 
+    var DarkMode = document.createElement("button");
+    DarkMode.className = "fluid medium grey ui button macro";
+    DarkMode.innerHTML = "Dark Mode";
+    DarkMode.addEventListener('click', changeTheme, false);
+    btnGroup.appendChild(DarkMode);
+
+    var Scale = document.createElement("button");
+    Scale.innerHTML = "Scale UI";
+    Scale.className = "fluid medium grey ui button macro";
+    Scale.addEventListener('click', scale, false);
+    btnGroup.appendChild(Scale);
+}
+
+function changeTheme() {
+    document.body.style.backgroundColor = "black";
+}
+
+function scale() {
+    var body = document.getElementsByTagName('body');
+    document.body.style.width = "400px";
+
+}
 
 
 
